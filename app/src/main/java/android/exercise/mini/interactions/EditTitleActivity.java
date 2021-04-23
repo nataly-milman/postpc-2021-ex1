@@ -14,40 +14,31 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class EditTitleActivity extends AppCompatActivity {
 
-  // TODO:
-  //  you can add fields to this class. those fields will be accessibly inside any method
-  //  (like `onCreate()` and `onBackPressed()` methods)
-  // for any field, make sure to set it's initial value. You CAN'T write a custom constructor
-  // for example, you can add this field:
-  // `private boolean isEditing = false;`
-  // in onCreate() set `this.isEditing` to `true` once the user starts editing, set to `false` once done editing
-  // in onBackPressed() check `if(this.isEditing)` to understand what to do
-  public boolean editingMode = false;
+    public boolean editingMode = false;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_edit_title);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_edit_title);
 
-    // find all views
-    FloatingActionButton fabStartEdit = findViewById(R.id.fab_start_edit);
-    FloatingActionButton fabEditDone = findViewById(R.id.fab_edit_done);
-    TextView textViewTitle = findViewById(R.id.textViewPageTitle);
-    EditText editTextTitle = findViewById(R.id.editTextPageTitle);
+        // find all views
+        FloatingActionButton fabStartEdit = findViewById(R.id.fab_start_edit);
+        FloatingActionButton fabEditDone = findViewById(R.id.fab_edit_done);
+        TextView textViewTitle = findViewById(R.id.textViewPageTitle);
+        EditText editTextTitle = findViewById(R.id.editTextPageTitle);
 
-    // setup - start from static title with "edit" button
-    fabStartEdit.setVisibility(View.VISIBLE);
-    fabEditDone.setVisibility(View.GONE);
-    textViewTitle.setText("Page title here");
-    textViewTitle.setVisibility(View.VISIBLE);
-    editTextTitle.setText("Page title here");
-    editTextTitle.setVisibility(View.GONE);
+        // setup - start from static title with "edit" button
+        fabStartEdit.setVisibility(View.VISIBLE);
+        fabEditDone.setVisibility(View.GONE);
+        textViewTitle.setText("Page title here");
+        textViewTitle.setVisibility(View.VISIBLE);
+        editTextTitle.setText("Page title here");
+        editTextTitle.setVisibility(View.GONE);
 
-    // handle clicks on "start edit"
-    fabStartEdit.setOnClickListener(v -> {
-      editingMode = true;
+        // handle clicks on "start edit"
+        fabStartEdit.setOnClickListener(v -> {
+            editingMode = true;
       /*
-      TODO:
       1. animate out the "start edit" FAB
       2. animate in the "done edit" FAB
       3. hide the static title (text-view)
@@ -58,22 +49,37 @@ public class EditTitleActivity extends AppCompatActivity {
 
       to complete (1.) & (2.), start by just changing visibility. only add animations after everything else is ready
        */
-      fabEditDone.setVisibility(View.VISIBLE);
-      fabStartEdit.setVisibility(View.GONE);
+            fabStartEdit.animate()
+                    .alpha(0f)
+                    .setDuration(300L)
+                    .rotation(-360L)
+                    .withEndAction(() ->
+                            fabEditDone.animate()
+                                    .alpha(1f)
+                                    .setDuration(300L)
+                                    .withEndAction(() ->
+                                            fabEditDone.animate()
+                                                    .rotation(360L)
+                                                    .setDuration(400L)
+                                                    .start())
+                                    .start()
+                    )
+                    .start();
+            fabEditDone.setVisibility(View.VISIBLE);
+            fabStartEdit.setVisibility(View.GONE);
 
-      textViewTitle.setVisibility(View.GONE);
-      editTextTitle.setText(textViewTitle.getText());
-      editTextTitle.setVisibility(View.VISIBLE);
+            textViewTitle.setVisibility(View.GONE);
+            editTextTitle.setText(textViewTitle.getText());
+            editTextTitle.setVisibility(View.VISIBLE);
 
-      InputMethodManager keyboard = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-      keyboard.showSoftInputFromInputMethod(editTextTitle.getWindowToken(), 0);
-    });
+            InputMethodManager keyboard = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            keyboard.showSoftInputFromInputMethod(editTextTitle.getWindowToken(), 0);
+        });
 
-    // handle clicks on "done edit"
-    fabEditDone.setOnClickListener(v -> {
-      editingMode = false;
+        // handle clicks on "done edit"
+        fabEditDone.setOnClickListener(v -> {
+            editingMode = false;
       /*
-      TODO:
       1. animate out the "done edit" FAB
       2. animate in the "start edit" FAB
       3. take the text from the user's input in the edit-text and put it inside the static text-view
@@ -83,24 +89,37 @@ public class EditTitleActivity extends AppCompatActivity {
 
       to complete (1.) & (2.), start by just changing visibility. only add animations after everything else is ready
        */
-      fabStartEdit.setVisibility(View.VISIBLE);
-      fabEditDone.setVisibility(View.GONE);
+            fabEditDone.animate()
+                    .alpha(0f)
+                    .setDuration(300L)
+                    .rotation(-360L)
+                    .withEndAction(() -> fabStartEdit.animate()
+                            .alpha(1f)
+                            .setDuration(300L)
+                            .withEndAction(() -> fabStartEdit.animate()
+                                    .rotation(360L)
+                                    .setDuration(400L)
+                                    .start())
+                            .start())
+                    .start();
 
-      textViewTitle.setText(editTextTitle.getText());
+            fabStartEdit.setVisibility(View.VISIBLE);
+            fabEditDone.setVisibility(View.GONE);
 
-      textViewTitle.setVisibility(View.VISIBLE);
-      editTextTitle.setVisibility(View.GONE);
+            textViewTitle.setText(editTextTitle.getText());
 
-      InputMethodManager keyboard = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-      keyboard.hideSoftInputFromWindow(editTextTitle.getWindowToken(), 0);
-    });
-  }
+            textViewTitle.setVisibility(View.VISIBLE);
+            editTextTitle.setVisibility(View.GONE);
 
-  @Override
-  public void onBackPressed() {
-    // BACK button was clicked
+            InputMethodManager keyboard = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            keyboard.hideSoftInputFromWindow(editTextTitle.getWindowToken(), 0);
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        // BACK button was clicked
     /*
-    TODO:
     if user is now editing, tap on BACK will revert the edit. do the following:
     1. hide the edit-text
     2. show the static text-view with previous text (discard user's input)
@@ -115,19 +134,33 @@ public class EditTitleActivity extends AppCompatActivity {
     to find views call `findViewById()` in a same way like in `onCreate()`
      */
 
-    FloatingActionButton fabStartEdit = findViewById(R.id.fab_start_edit);
-    FloatingActionButton fabEditDone = findViewById(R.id.fab_edit_done);
-    TextView textViewTitle = findViewById(R.id.textViewPageTitle);
-    EditText editTextTitle = findViewById(R.id.editTextPageTitle);
+        FloatingActionButton fabStartEdit = findViewById(R.id.fab_start_edit);
+        FloatingActionButton fabEditDone = findViewById(R.id.fab_edit_done);
+        TextView textViewTitle = findViewById(R.id.textViewPageTitle);
+        EditText editTextTitle = findViewById(R.id.editTextPageTitle);
 
-    if (editingMode){
-      fabStartEdit.setVisibility(View.VISIBLE);
-      fabEditDone.setVisibility(View.GONE);
+        if (editingMode) {
+            editingMode = false;
+            fabEditDone.animate()
+                    .alpha(0f)
+                    .setDuration(300L)
+                    .rotation(-360L)
+                    .withEndAction(() -> fabStartEdit.animate()
+                            .alpha(1f)
+                            .setDuration(300L)
+                            .withEndAction(() -> fabStartEdit.animate()
+                                    .rotation(360L)
+                                    .setDuration(400L)
+                                    .start())
+                            .start())
+                    .start();
+            fabStartEdit.setVisibility(View.VISIBLE);
+            fabEditDone.setVisibility(View.GONE);
 
-      textViewTitle.setVisibility(View.VISIBLE);
-      editTextTitle.setVisibility(View.GONE);
-    } else {
-      super.onBackPressed();
+            textViewTitle.setVisibility(View.VISIBLE);
+            editTextTitle.setVisibility(View.GONE);
+        } else {
+            super.onBackPressed();
+        }
     }
-  }
 }
