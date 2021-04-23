@@ -1,7 +1,9 @@
 package android.exercise.mini.interactions;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -54,6 +56,15 @@ public class EditTitleActivity extends AppCompatActivity {
 
       to complete (1.) & (2.), start by just changing visibility. only add animations after everything else is ready
        */
+      fabEditDone.setVisibility(View.VISIBLE);
+      fabStartEdit.setVisibility(View.GONE);
+
+      textViewTitle.setVisibility(View.GONE);
+      editTextTitle.setText(textViewTitle.getText());
+      editTextTitle.setVisibility(View.VISIBLE);
+
+      InputMethodManager keyboard = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+      keyboard.showSoftInputFromInputMethod(editTextTitle.getWindowToken(), 0);
     });
 
     // handle clicks on "done edit"
@@ -69,6 +80,16 @@ public class EditTitleActivity extends AppCompatActivity {
 
       to complete (1.) & (2.), start by just changing visibility. only add animations after everything else is ready
        */
+      fabStartEdit.setVisibility(View.VISIBLE);
+      fabEditDone.setVisibility(View.GONE);
+
+      textViewTitle.setText(editTextTitle.getText());
+
+      textViewTitle.setVisibility(View.VISIBLE);
+      editTextTitle.setVisibility(View.GONE);
+
+      InputMethodManager keyboard = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+      keyboard.hideSoftInputFromWindow(editTextTitle.getWindowToken(), 0);
     });
   }
 
