@@ -22,6 +22,7 @@ public class EditTitleActivity extends AppCompatActivity {
   // `private boolean isEditing = false;`
   // in onCreate() set `this.isEditing` to `true` once the user starts editing, set to `false` once done editing
   // in onBackPressed() check `if(this.isEditing)` to understand what to do
+  public boolean editingMode = false;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,7 @@ public class EditTitleActivity extends AppCompatActivity {
 
     // handle clicks on "start edit"
     fabStartEdit.setOnClickListener(v -> {
+      editingMode = true;
       /*
       TODO:
       1. animate out the "start edit" FAB
@@ -69,6 +71,7 @@ public class EditTitleActivity extends AppCompatActivity {
 
     // handle clicks on "done edit"
     fabEditDone.setOnClickListener(v -> {
+      editingMode = false;
       /*
       TODO:
       1. animate out the "done edit" FAB
@@ -111,5 +114,20 @@ public class EditTitleActivity extends AppCompatActivity {
     to work with views, you will need to find them first.
     to find views call `findViewById()` in a same way like in `onCreate()`
      */
+
+    FloatingActionButton fabStartEdit = findViewById(R.id.fab_start_edit);
+    FloatingActionButton fabEditDone = findViewById(R.id.fab_edit_done);
+    TextView textViewTitle = findViewById(R.id.textViewPageTitle);
+    EditText editTextTitle = findViewById(R.id.editTextPageTitle);
+
+    if (editingMode){
+      fabStartEdit.setVisibility(View.VISIBLE);
+      fabEditDone.setVisibility(View.GONE);
+
+      textViewTitle.setVisibility(View.VISIBLE);
+      editTextTitle.setVisibility(View.GONE);
+    } else {
+      super.onBackPressed();
+    }
   }
 }
